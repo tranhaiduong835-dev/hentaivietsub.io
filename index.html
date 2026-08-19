@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hentaivietsub.io</title>
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a'/%3E%3Cpath d='M30 75 C30 50, 45 40, 50 20 C55 40, 70 50, 70 75 Z' fill='%23222'/%3E%3Ccircle cx='50' cy='35' r='12' fill='%23111'/%3E%3Cpath d='M42 45 L58 45 L50 65 Z' fill='%23e62117' opacity='0.8'/%3E%3C/svg%3E">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #eee;
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+/* Thanh Navigation Cố Định Ở Góc Trên Cùng Phải */
+    .top-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: rgba(10, 10, 10, 0.95);
+      border-bottom: 1px solid #222;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 25px;
+      gap: 12px;
+      z-index: 100;
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-auth {
+      background: transparent;
+      border: 1px solid #333;
+      color: #eee;
+      padding: 7px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-auth:hover {
+      border-color: #e62117;
+      color: #e62117;
+    }
+
+    .btn-auth.btn-primary {
+      background: #e62117;
+      border-color: #e62117;
+      color: #fff;
+    }
+
+    .btn-auth.btn-primary:hover {
+      background: #cc1e15;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding: 10px 0;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding: 30px 0 10px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      color: #666;
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+
+    /* CSS Thanh Tìm Kiếm */
+    .search-box {
+      margin-bottom: 35px;
+      text-align: center;
+    }
+
+    .search-box input {
+      width: 100%;
+      max-width: 500px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      background: #141414;
+      color: #eee;
+      border: 1px solid #333;
+      border-radius: 25px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      border-color: #e62117;
+      box-shadow: 0 0 10px rgba(230, 33, 23, 0.3);
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+    }
+
+    .video-card {
+      background: #141414;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #222;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .video-card:hover {
+      transform: translateY(-5px);
+      border-color: #444;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background: #000;
+    }
+
+    .video-wrapper a {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .video-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-info {
+      padding: 16px 18px;
+    }
+
+    .video-info h3 {
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .video-info p {
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      color: #444;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+<!-- Nút góc trên cùng bên phải -->
+  <div class="top-header">
+    <button class="btn-auth" onclick="openModal('loginModal')">Đăng nhập</button>
+    <button class="btn-auth btn-primary" onclick="openModal('registerModal')">Đăng ký</button>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>Xem Hentai tại Hentaivietsub.io</h1>
+      <p>Nơi cảm xúc thăng hoa theo thời gian</p>
+    </header>
+
+    <!-- Thanh Tìm Kiếm -->
+    <div class="search-box">
+      <input type="text" id="searchInput" onkeyup="filterVideos()" placeholder="Nhập tên tiêu đề phim để tìm...">
+    </div>
+
+    <div class="video-grid" id="videoGrid">
+
+      <!-- Video 1 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/harem-shima-e-youkoso-1" target="_blank">
+            <img src="images/video1.jpg" alt="Video 1">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Harem Shima và Youkoso! 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 2 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/inaka-ni-wa-kore-kurai-shika-goraku-ga-nai-2" target="_blank">
+            <img src="images/video2.jpg" alt="Video 2">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Inaka ni wa Kore Kurai Shika Goraku ga Nai 2</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 3 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/inaka-ni-wa-kore-kurai-shika-goraku-ga-nai-1" target="_blank">
+            <img src="images/video3.jpg" alt="Video 3">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Inaka ni wa Kore Kurai Shika Goraku ga Nai 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 4 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/ichigo-aika-zatsu-de-namaiki-na-imouto-to-warikirenai-ani-season-1" target="_blank">
+            <img src="images/video4.jpg" alt="Video 4">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Ichigo Aika: Zatsu de Namaiki na Imouto to Warikirenai Ani Phần 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 5 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/marika-chan-no-koukando-wa-bukkowarete-iru-season-1" target="_blank">
+            <img src="images/video5.jpg" alt="Video 5">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Marika-chan no Koukando wa Bukkowarete Iru Phần 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 6 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/ookii-onnanoko-wa-suki-desuka-season-1" target="_blank">
+            <img src="images/video6.jpg" alt="Video 6">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Ookii Onnanoko wa Suki Desuka? Phần 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 7 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/hamehara-1" target="_blank">
+            <img src="images/video7.jpg" alt="Video 7">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Hamehara 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 8 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/todo-no-tsumari-2" target="_blank">
+            <img src="images/video8.jpg" alt="Video 8">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Todo no Tsumari 2</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 9 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/todo-no-tsumari-1" target="_blank">
+            <img src="images/video9.jpg" alt="Video 9">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Todo no Tusmari 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 10 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/enjo-kouhai-11" target="_blank">
+            <img src="images/video10.jpg" alt="Video 10">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Enjo Kouhai 11</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 11 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/natsu-ga-owaru-made-2" target="_blank">
+            <img src="images/video11.jpg" alt="Video 11">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Natsu ga Owaru made 2</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 12 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/natsu-ga-owaru-made-1" target="_blank">
+            <img src="images/video12.jpg" alt="Video 12">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Natsu ga Owaru made 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 13 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/furachi-1" target="_blank">
+            <img src="images/video13.jpg" alt="Video 13">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Furachi 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 14 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/kare-no-shiranai-himitsu-o-irete-the-animation-1" target="_blank">
+            <img src="images/video14.jpg" alt="Video 14">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Kare no Shiranai Himitsu o Irete The Animation 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 15 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/heart-mark-oome-ova-2" target="_blank">
+            <img src="images/video15.jpg" alt="Video 15">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Heart Mark Oome OVA 2</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 16 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/heart-mark-oome-ova-1" target="_blank">
+            <img src="images/video16.jpg" alt="Video 16">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Heart Mark Oome OVA 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 17 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/akogare-no-onna-joushi-ga-2" target="_blank">
+            <img src="images/video17.jpg" alt="Video 17">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Akogare no Onna Joushi ga 2</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 18 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://hanime.tv/videos/hentai/yuugao-1" target="_blank">
+            <img src="images/video18.jpg" alt="Video 18">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Yuugao 1</h3>
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Video 19 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-19" target="_blank">
+            <img src="images/video19.jpg" alt="Video 19">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 19</h3>
+          <p>Mô tả ngắn cho Video 19</p>
+        </div>
+      </div>
+
+      <!-- Video 20 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-20" target="_blank">
+            <img src="images/video20.jpg" alt="Video 20">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 20</h3>
+          <p>Mô tả ngắn cho Video 20</p>
+        </div>
+      </div>
+
+      <!-- Video 21 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-21" target="_blank">
+            <img src="images/video21.jpg" alt="Video 21">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 21</h3>
+          <p>Mô tả ngắn cho Video 21</p>
+        </div>
+      </div>
+
+      <!-- Video 22 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-22" target="_blank">
+            <img src="images/video22.jpg" alt="Video 22">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 22</h3>
+          <p>Mô tả ngắn cho Video 22</p>
+        </div>
+      </div>
+
+      <!-- Video 23 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-23" target="_blank">
+            <img src="images/video23.jpg" alt="Video 23">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 23</h3>
+          <p>Mô tả ngắn cho Video 23</p>
+        </div>
+      </div>
+
+      <!-- Video 24 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-24" target="_blank">
+            <img src="images/video24.jpg" alt="Video 24">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 24</h3>
+          <p>Mô tả ngắn cho Video 24</p>
+        </div>
+      </div>
+
+      <!-- Video 25 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-25" target="_blank">
+            <img src="images/video25.jpg" alt="Video 25">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 25</h3>
+          <p>Mô tả ngắn cho Video 25</p>
+        </div>
+      </div>
+
+      <!-- Video 26 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-26" target="_blank">
+            <img src="images/video26.jpg" alt="Video 26">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 26</h3>
+          <p>Mô tả ngắn cho Video 26</p>
+        </div>
+      </div>
+
+      <!-- Video 27 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-27" target="_blank">
+            <img src="images/video27.jpg" alt="Video 27">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 27</h3>
+          <p>Mô tả ngắn cho Video 27</p>
+        </div>
+      </div>
+
+      <!-- Video 28 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-28" target="_blank">
+            <img src="images/video28.jpg" alt="Video 28">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 28</h3>
+          <p>Mô tả ngắn cho Video 28</p>
+        </div>
+      </div>
+
+      <!-- Video 29 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-29" target="_blank">
+            <img src="images/video29.jpg" alt="Video 29">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 29</h3>
+          <p>Mô tả ngắn cho Video 29</p>
+        </div>
+      </div>
+
+      <!-- Video 30 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-30" target="_blank">
+            <img src="images/video30.jpg" alt="Video 30">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 30</h3>
+          <p>Mô tả ngắn cho Video 30</p>
+        </div>
+      </div>
+
+      <!-- Video 31 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-31" target="_blank">
+            <img src="images/video31.jpg" alt="Video 31">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 31</h3>
+          <p>Mô tả ngắn cho Video 31</p>
+        </div>
+      </div>
+
+      <!-- Video 32 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-32" target="_blank">
+            <img src="images/video32.jpg" alt="Video 32">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 32</h3>
+          <p>Mô tả ngắn cho Video 32</p>
+        </div>
+      </div>
+
+      <!-- Video 33 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-33" target="_blank">
+            <img src="images/video33.jpg" alt="Video 33">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 33</h3>
+          <p>Mô tả ngắn cho Video 33</p>
+        </div>
+      </div>
+
+      <!-- Video 34 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-34" target="_blank">
+            <img src="images/video34.jpg" alt="Video 34">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 34</h3>
+          <p>Mô tả ngắn cho Video 34</p>
+        </div>
+      </div>
+
+      <!-- Video 35 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-35" target="_blank">
+            <img src="images/video35.jpg" alt="Video 35">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 35</h3>
+          <p>Mô tả ngắn cho Video 35</p>
+        </div>
+      </div>
+
+      <!-- Video 36 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-36" target="_blank">
+            <img src="images/video36.jpg" alt="Video 36">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 36</h3>
+          <p>Mô tả ngắn cho Video 36</p>
+        </div>
+      </div>
+
+      <!-- Video 37 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-37" target="_blank">
+            <img src="images/video37.jpg" alt="Video 37">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 37</h3>
+          <p>Mô tả ngắn cho Video 37</p>
+        </div>
+      </div>
+
+      <!-- Video 38 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-38" target="_blank">
+            <img src="images/video38.jpg" alt="Video 38">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 38</h3>
+          <p>Mô tả ngắn cho Video 38</p>
+        </div>
+      </div>
+
+      <!-- Video 39 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-39" target="_blank">
+            <img src="images/video39.jpg" alt="Video 39">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 39</h3>
+          <p>Mô tả ngắn cho Video 39</p>
+        </div>
+      </div>
+
+      <!-- Video 40 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-40" target="_blank">
+            <img src="images/video40.jpg" alt="Video 40">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 40</h3>
+          <p>Mô tả ngắn cho Video 40</p>
+        </div>
+      </div>
+
+      <!-- Video 41 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-41" target="_blank">
+            <img src="images/video41.jpg" alt="Video 41">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 41</h3>
+          <p>Mô tả ngắn cho Video 41</p>
+        </div>
+      </div>
+
+      <!-- Video 42 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-42" target="_blank">
+            <img src="images/video42.jpg" alt="Video 42">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 42</h3>
+          <p>Mô tả ngắn cho Video 42</p>
+        </div>
+      </div>
+
+      <!-- Video 43 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-43" target="_blank">
+            <img src="images/video43.jpg" alt="Video 43">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 43</h3>
+          <p>Mô tả ngắn cho Video 43</p>
+        </div>
+      </div>
+
+      <!-- Video 44 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-44" target="_blank">
+            <img src="images/video44.jpg" alt="Video 44">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 44</h3>
+          <p>Mô tả ngắn cho Video 44</p>
+        </div>
+      </div>
+
+      <!-- Video 45 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-45" target="_blank">
+            <img src="images/video45.jpg" alt="Video 45">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 45</h3>
+          <p>Mô tả ngắn cho Video 45</p>
+        </div>
+      </div>
+
+      <!-- Video 46 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-46" target="_blank">
+            <img src="images/video46.jpg" alt="Video 46">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 46</h3>
+          <p>Mô tả ngắn cho Video 46</p>
+        </div>
+      </div>
+
+      <!-- Video 47 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-47" target="_blank">
+            <img src="images/video47.jpg" alt="Video 47">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 47</h3>
+          <p>Mô tả ngắn cho Video 47</p>
+        </div>
+      </div>
+
+      <!-- Video 48 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-48" target="_blank">
+            <img src="images/video48.jpg" alt="Video 48">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 48</h3>
+          <p>Mô tả ngắn cho Video 48</p>
+        </div>
+      </div>
+
+      <!-- Video 49 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-49" target="_blank">
+            <img src="images/video49.jpg" alt="Video 49">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 49</h3>
+          <p>Mô tả ngắn cho Video 49</p>
+        </div>
+      </div>
+
+      <!-- Video 50 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-50" target="_blank">
+            <img src="images/video50.jpg" alt="Video 50">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 50</h3>
+          <p>Mô tả ngắn cho Video 50</p>
+        </div>
+      </div>
+
+      <!-- Video 51 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-51" target="_blank">
+            <img src="images/video51.jpg" alt="Video 51">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 51</h3>
+          <p>Mô tả ngắn cho Video 51</p>
+        </div>
+      </div>
+
+      <!-- Video 52 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-52" target="_blank">
+            <img src="images/video52.jpg" alt="Video 52">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 52</h3>
+          <p>Mô tả ngắn cho Video 52</p>
+        </div>
+      </div>
+
+      <!-- Video 53 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-53" target="_blank">
+            <img src="images/video53.jpg" alt="Video 53">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 53</h3>
+          <p>Mô tả ngắn cho Video 53</p>
+        </div>
+      </div>
+
+      <!-- Video 54 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-54" target="_blank">
+            <img src="images/video54.jpg" alt="Video 54">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 54</h3>
+          <p>Mô tả ngắn cho Video 54</p>
+        </div>
+      </div>
+
+      <!-- Video 55 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-55" target="_blank">
+            <img src="images/video55.jpg" alt="Video 55">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 55</h3>
+          <p>Mô tả ngắn cho Video 55</p>
+        </div>
+      </div>
+
+      <!-- Video 56 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-56" target="_blank">
+            <img src="images/video56.jpg" alt="Video 56">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 56</h3>
+          <p>Mô tả ngắn cho Video 56</p>
+        </div>
+      </div>
+
+      <!-- Video 57 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-57" target="_blank">
+            <img src="images/video57.jpg" alt="Video 57">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 57</h3>
+          <p>Mô tả ngắn cho Video 57</p>
+        </div>
+      </div>
+
+      <!-- Video 58 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-58" target="_blank">
+            <img src="images/video58.jpg" alt="Video 58">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 58</h3>
+          <p>Mô tả ngắn cho Video 58</p>
+        </div>
+      </div>
+
+      <!-- Video 59 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-59" target="_blank">
+            <img src="images/video59.jpg" alt="Video 59">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 59</h3>
+          <p>Mô tả ngắn cho Video 59</p>
+        </div>
+      </div>
+
+      <!-- Video 60 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-60" target="_blank">
+            <img src="images/video60.jpg" alt="Video 60">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 60</h3>
+          <p>Mô tả ngắn cho Video 60</p>
+        </div>
+      </div>
+
+      <!-- Video 61 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-61" target="_blank">
+            <img src="images/video61.jpg" alt="Video 61">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 61</h3>
+          <p>Mô tả ngắn cho Video 61</p>
+        </div>
+      </div>
+
+      <!-- Video 62 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-62" target="_blank">
+            <img src="images/video62.jpg" alt="Video 62">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 62</h3>
+          <p>Mô tả ngắn cho Video 62</p>
+        </div>
+      </div>
+
+      <!-- Video 63 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-63" target="_blank">
+            <img src="images/video63.jpg" alt="Video 63">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 63</h3>
+          <p>Mô tả ngắn cho Video 63</p>
+        </div>
+      </div>
+
+      <!-- Video 64 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-64" target="_blank">
+            <img src="images/video64.jpg" alt="Video 64">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 64</h3>
+          <p>Mô tả ngắn cho Video 64</p>
+        </div>
+      </div>
+
+      <!-- Video 65 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-65" target="_blank">
+            <img src="images/video65.jpg" alt="Video 65">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 65</h3>
+          <p>Mô tả ngắn cho Video 65</p>
+        </div>
+      </div>
+
+      <!-- Video 66 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-66" target="_blank">
+            <img src="images/video66.jpg" alt="Video 66">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 66</h3>
+          <p>Mô tả ngắn cho Video 66</p>
+        </div>
+      </div>
+
+      <!-- Video 67 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-67" target="_blank">
+            <img src="images/video67.jpg" alt="Video 67">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 67</h3>
+          <p>Mô tả ngắn cho Video 67</p>
+        </div>
+      </div>
+
+      <!-- Video 68 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-68" target="_blank">
+            <img src="images/video68.jpg" alt="Video 68">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 68</h3>
+          <p>Mô tả ngắn cho Video 68</p>
+        </div>
+      </div>
+
+      <!-- Video 69 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-69" target="_blank">
+            <img src="images/video69.jpg" alt="Video 69">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 69</h3>
+          <p>Mô tả ngắn cho Video 69</p>
+        </div>
+      </div>
+
+      <!-- Video 70 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-70" target="_blank">
+            <img src="images/video70.jpg" alt="Video 70">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 70</h3>
+          <p>Mô tả ngắn cho Video 70</p>
+        </div>
+      </div>
+
+      <!-- Video 71 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-71" target="_blank">
+            <img src="images/video71.jpg" alt="Video 71">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 71</h3>
+          <p>Mô tả ngắn cho Video 71</p>
+        </div>
+      </div>
+
+      <!-- Video 72 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-72" target="_blank">
+            <img src="images/video72.jpg" alt="Video 72">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 72</h3>
+          <p>Mô tả ngắn cho Video 72</p>
+        </div>
+      </div>
+
+      <!-- Video 73 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-73" target="_blank">
+            <img src="images/video73.jpg" alt="Video 73">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 73</h3>
+          <p>Mô tả ngắn cho Video 73</p>
+        </div>
+      </div>
+
+      <!-- Video 74 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-74" target="_blank">
+            <img src="images/video74.jpg" alt="Video 74">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 74</h3>
+          <p>Mô tả ngắn cho Video 74</p>
+        </div>
+      </div>
+
+      <!-- Video 75 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-75" target="_blank">
+            <img src="images/video75.jpg" alt="Video 75">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 75</h3>
+          <p>Mô tả ngắn cho Video 75</p>
+        </div>
+      </div>
+
+      <!-- Video 76 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-76" target="_blank">
+            <img src="images/video76.jpg" alt="Video 76">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 76</h3>
+          <p>Mô tả ngắn cho Video 76</p>
+        </div>
+      </div>
+
+      <!-- Video 77 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-77" target="_blank">
+            <img src="images/video77.jpg" alt="Video 77">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 77</h3>
+          <p>Mô tả ngắn cho Video 77</p>
+        </div>
+      </div>
+
+      <!-- Video 78 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-78" target="_blank">
+            <img src="images/video78.jpg" alt="Video 78">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 78</h3>
+          <p>Mô tả ngắn cho Video 78</p>
+        </div>
+      </div>
+
+      <!-- Video 79 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-79" target="_blank">
+            <img src="images/video79.jpg" alt="Video 79">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 79</h3>
+          <p>Mô tả ngắn cho Video 79</p>
+        </div>
+      </div>
+
+      <!-- Video 80 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-80" target="_blank">
+            <img src="images/video80.jpg" alt="Video 80">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 80</h3>
+          <p>Mô tả ngắn cho Video 80</p>
+        </div>
+      </div>
+
+      <!-- Video 81 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-81" target="_blank">
+            <img src="images/video81.jpg" alt="Video 81">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 81</h3>
+          <p>Mô tả ngắn cho Video 81</p>
+        </div>
+      </div>
+
+      <!-- Video 82 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-82" target="_blank">
+            <img src="images/video82.jpg" alt="Video 82">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 82</h3>
+          <p>Mô tả ngắn cho Video 82</p>
+        </div>
+      </div>
+
+      <!-- Video 83 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-83" target="_blank">
+            <img src="images/video83.jpg" alt="Video 83">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 83</h3>
+          <p>Mô tả ngắn cho Video 83</p>
+        </div>
+      </div>
+
+      <!-- Video 84 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-84" target="_blank">
+            <img src="images/video84.jpg" alt="Video 84">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 84</h3>
+          <p>Mô tả ngắn cho Video 84</p>
+        </div>
+      </div>
+
+      <!-- Video 85 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-85" target="_blank">
+            <img src="images/video85.jpg" alt="Video 85">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 85</h3>
+          <p>Mô tả ngắn cho Video 85</p>
+        </div>
+      </div>
+
+      <!-- Video 86 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-86" target="_blank">
+            <img src="images/video86.jpg" alt="Video 86">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 86</h3>
+          <p>Mô tả ngắn cho Video 86</p>
+        </div>
+      </div>
+
+      <!-- Video 87 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-87" target="_blank">
+            <img src="images/video87.jpg" alt="Video 87">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 87</h3>
+          <p>Mô tả ngắn cho Video 87</p>
+        </div>
+      </div>
+
+      <!-- Video 88 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-88" target="_blank">
+            <img src="images/video88.jpg" alt="Video 88">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 88</h3>
+          <p>Mô tả ngắn cho Video 88</p>
+        </div>
+      </div>
+
+      <!-- Video 89 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-89" target="_blank">
+            <img src="images/video89.jpg" alt="Video 89">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 89</h3>
+          <p>Mô tả ngắn cho Video 89</p>
+        </div>
+      </div>
+
+      <!-- Video 90 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-90" target="_blank">
+            <img src="images/video90.jpg" alt="Video 90">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 90</h3>
+          <p>Mô tả ngắn cho Video 90</p>
+        </div>
+      </div>
+
+      <!-- Video 91 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-91" target="_blank">
+            <img src="images/video91.jpg" alt="Video 91">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 91</h3>
+          <p>Mô tả ngắn cho Video 91</p>
+        </div>
+      </div>
+
+      <!-- Video 92 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-92" target="_blank">
+            <img src="images/video92.jpg" alt="Video 92">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 92</h3>
+          <p>Mô tả ngắn cho Video 92</p>
+        </div>
+      </div>
+
+      <!-- Video 93 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-93" target="_blank">
+            <img src="images/video93.jpg" alt="Video 93">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 93</h3>
+          <p>Mô tả ngắn cho Video 93</p>
+        </div>
+      </div>
+
+      <!-- Video 94 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-94" target="_blank">
+            <img src="images/video94.jpg" alt="Video 94">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 94</h3>
+          <p>Mô tả ngắn cho Video 94</p>
+        </div>
+      </div>
+
+      <!-- Video 95 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-95" target="_blank">
+            <img src="images/video95.jpg" alt="Video 95">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 95</h3>
+          <p>Mô tả ngắn cho Video 95</p>
+        </div>
+      </div>
+
+      <!-- Video 96 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-96" target="_blank">
+            <img src="images/video96.jpg" alt="Video 96">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 96</h3>
+          <p>Mô tả ngắn cho Video 96</p>
+        </div>
+      </div>
+
+      <!-- Video 97 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-97" target="_blank">
+            <img src="images/video97.jpg" alt="Video 97">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 97</h3>
+          <p>Mô tả ngắn cho Video 97</p>
+        </div>
+      </div>
+
+      <!-- Video 98 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-98" target="_blank">
+            <img src="images/video98.jpg" alt="Video 98">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 98</h3>
+          <p>Mô tả ngắn cho Video 98</p>
+        </div>
+      </div>
+
+      <!-- Video 99 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-99" target="_blank">
+            <img src="images/video99.jpg" alt="Video 99">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 99</h3>
+          <p>Mô tả ngắn cho Video 99</p>
+        </div>
+      </div>
+
+      <!-- Video 100 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-100" target="_blank">
+            <img src="images/video100.jpg" alt="Video 100">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 100</h3>
+          <p>Mô tả ngắn cho Video 100</p>
+        </div>
+      </div>
+
+      <!-- Video 101 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-101" target="_blank">
+            <img src="images/video101.jpg" alt="Video 101">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 101</h3>
+          <p>Mô tả ngắn cho Video 101</p>
+        </div>
+      </div>
+
+      <!-- Video 102 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-102" target="_blank">
+            <img src="images/video102.jpg" alt="Video 102">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 102</h3>
+          <p>Mô tả ngắn cho Video 102</p>
+        </div>
+      </div>
+
+      <!-- Video 103 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-103" target="_blank">
+            <img src="images/video103.jpg" alt="Video 103">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 103</h3>
+          <p>Mô tả ngắn cho Video 103</p>
+        </div>
+      </div>
+
+      <!-- Video 104 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-104" target="_blank">
+            <img src="images/video104.jpg" alt="Video 104">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 104</h3>
+          <p>Mô tả ngắn cho Video 104</p>
+        </div>
+      </div>
+
+      <!-- Video 105 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-105" target="_blank">
+            <img src="images/video105.jpg" alt="Video 105">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 105</h3>
+          <p>Mô tả ngắn cho Video 105</p>
+        </div>
+      </div>
+
+      <!-- Video 106 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-106" target="_blank">
+            <img src="images/video106.jpg" alt="Video 106">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 106</h3>
+          <p>Mô tả ngắn cho Video 106</p>
+        </div>
+      </div>
+
+      <!-- Video 107 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-107" target="_blank">
+            <img src="images/video107.jpg" alt="Video 107">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 107</h3>
+          <p>Mô tả ngắn cho Video 107</p>
+        </div>
+      </div>
+
+      <!-- Video 108 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-108" target="_blank">
+            <img src="images/video108.jpg" alt="Video 108">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 108</h3>
+          <p>Mô tả ngắn cho Video 108</p>
+        </div>
+      </div>
+
+      <!-- Video 109 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-109" target="_blank">
+            <img src="images/video109.jpg" alt="Video 109">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 109</h3>
+          <p>Mô tả ngắn cho Video 109</p>
+        </div>
+      </div>
+
+      <!-- Video 110 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-110" target="_blank">
+            <img src="images/video110.jpg" alt="Video 110">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 110</h3>
+          <p>Mô tả ngắn cho Video 110</p>
+        </div>
+      </div>
+
+      <!-- Video 111 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-111" target="_blank">
+            <img src="images/video111.jpg" alt="Video 111">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 111</h3>
+          <p>Mô tả ngắn cho Video 111</p>
+        </div>
+      </div>
+
+      <!-- Video 112 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-112" target="_blank">
+            <img src="images/video112.jpg" alt="Video 112">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 112</h3>
+          <p>Mô tả ngắn cho Video 112</p>
+        </div>
+      </div>
+
+      <!-- Video 113 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-113" target="_blank">
+            <img src="images/video113.jpg" alt="Video 113">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 113</h3>
+          <p>Mô tả ngắn cho Video 113</p>
+        </div>
+      </div>
+
+      <!-- Video 114 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-114" target="_blank">
+            <img src="images/video114.jpg" alt="Video 114">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 114</h3>
+          <p>Mô tả ngắn cho Video 114</p>
+        </div>
+      </div>
+
+      <!-- Video 115 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-115" target="_blank">
+            <img src="images/video115.jpg" alt="Video 115">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 115</h3>
+          <p>Mô tả ngắn cho Video 115</p>
+        </div>
+      </div>
+
+      <!-- Video 116 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-116" target="_blank">
+            <img src="images/video116.jpg" alt="Video 116">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 116</h3>
+          <p>Mô tả ngắn cho Video 116</p>
+        </div>
+      </div>
+
+      <!-- Video 117 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-117" target="_blank">
+            <img src="images/video117.jpg" alt="Video 117">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 117</h3>
+          <p>Mô tả ngắn cho Video 117</p>
+        </div>
+      </div>
+
+      <!-- Video 118 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-118" target="_blank">
+            <img src="images/video118.jpg" alt="Video 118">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 118</h3>
+          <p>Mô tả ngắn cho Video 118</p>
+        </div>
+      </div>
+
+      <!-- Video 119 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-119" target="_blank">
+            <img src="images/video119.jpg" alt="Video 119">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 119</h3>
+          <p>Mô tả ngắn cho Video 119</p>
+        </div>
+      </div>
+
+      <!-- Video 120 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-120" target="_blank">
+            <img src="images/video120.jpg" alt="Video 120">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 120</h3>
+          <p>Mô tả ngắn cho Video 120</p>
+        </div>
+      </div>
+
+      <!-- Video 121 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-121" target="_blank">
+            <img src="images/video121.jpg" alt="Video 121">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 121</h3>
+          <p>Mô tả ngắn cho Video 121</p>
+        </div>
+      </div>
+
+      <!-- Video 122 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-122" target="_blank">
+            <img src="images/video122.jpg" alt="Video 122">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 122</h3>
+          <p>Mô tả ngắn cho Video 122</p>
+        </div>
+      </div>
+
+      <!-- Video 123 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-123" target="_blank">
+            <img src="images/video123.jpg" alt="Video 123">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 123</h3>
+          <p>Mô tả ngắn cho Video 123</p>
+        </div>
+      </div>
+
+      <!-- Video 124 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-124" target="_blank">
+            <img src="images/video124.jpg" alt="Video 124">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 124</h3>
+          <p>Mô tả ngắn cho Video 124</p>
+        </div>
+      </div>
+
+      <!-- Video 125 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-125" target="_blank">
+            <img src="images/video125.jpg" alt="Video 125">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 125</h3>
+          <p>Mô tả ngắn cho Video 125</p>
+        </div>
+      </div>
+
+      <!-- Video 126 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-126" target="_blank">
+            <img src="images/video126.jpg" alt="Video 126">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 126</h3>
+          <p>Mô tả ngắn cho Video 126</p>
+        </div>
+      </div>
+
+      <!-- Video 127 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-127" target="_blank">
+            <img src="images/video127.jpg" alt="Video 127">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 127</h3>
+          <p>Mô tả ngắn cho Video 127</p>
+        </div>
+      </div>
+
+      <!-- Video 128 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-128" target="_blank">
+            <img src="images/video128.jpg" alt="Video 128">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 128</h3>
+          <p>Mô tả ngắn cho Video 128</p>
+        </div>
+      </div>
+
+      <!-- Video 129 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-129" target="_blank">
+            <img src="images/video129.jpg" alt="Video 129">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 129</h3>
+          <p>Mô tả ngắn cho Video 129</p>
+        </div>
+      </div>
+
+      <!-- Video 130 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-130" target="_blank">
+            <img src="images/video130.jpg" alt="Video 130">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 130</h3>
+          <p>Mô tả ngắn cho Video 130</p>
+        </div>
+      </div>
+
+      <!-- Video 131 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-131" target="_blank">
+            <img src="images/video131.jpg" alt="Video 131">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 131</h3>
+          <p>Mô tả ngắn cho Video 131</p>
+        </div>
+      </div>
+
+      <!-- Video 132 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-132" target="_blank">
+            <img src="images/video132.jpg" alt="Video 132">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 132</h3>
+          <p>Mô tả ngắn cho Video 132</p>
+        </div>
+      </div>
+
+      <!-- Video 133 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-133" target="_blank">
+            <img src="images/video133.jpg" alt="Video 133">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 133</h3>
+          <p>Mô tả ngắn cho Video 133</p>
+        </div>
+      </div>
+
+      <!-- Video 134 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-134" target="_blank">
+            <img src="images/video134.jpg" alt="Video 134">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 134</h3>
+          <p>Mô tả ngắn cho Video 134</p>
+        </div>
+      </div>
+
+      <!-- Video 135 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-135" target="_blank">
+            <img src="images/video135.jpg" alt="Video 135">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 135</h3>
+          <p>Mô tả ngắn cho Video 135</p>
+        </div>
+      </div>
+
+      <!-- Video 136 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-136" target="_blank">
+            <img src="images/video136.jpg" alt="Video 136">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 136</h3>
+          <p>Mô tả ngắn cho Video 136</p>
+        </div>
+      </div>
+
+      <!-- Video 137 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-137" target="_blank">
+            <img src="images/video137.jpg" alt="Video 137">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 137</h3>
+          <p>Mô tả ngắn cho Video 137</p>
+        </div>
+      </div>
+
+      <!-- Video 138 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-138" target="_blank">
+            <img src="images/video138.jpg" alt="Video 138">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 138</h3>
+          <p>Mô tả ngắn cho Video 138</p>
+        </div>
+      </div>
+
+      <!-- Video 139 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-139" target="_blank">
+            <img src="images/video139.jpg" alt="Video 139">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 139</h3>
+          <p>Mô tả ngắn cho Video 139</p>
+        </div>
+      </div>
+
+      <!-- Video 140 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-140" target="_blank">
+            <img src="images/video140.jpg" alt="Video 140">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 140</h3>
+          <p>Mô tả ngắn cho Video 140</p>
+        </div>
+      </div>
+
+      <!-- Video 141 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-141" target="_blank">
+            <img src="images/video141.jpg" alt="Video 141">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 141</h3>
+          <p>Mô tả ngắn cho Video 141</p>
+        </div>
+      </div>
+
+      <!-- Video 142 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-142" target="_blank">
+            <img src="images/video142.jpg" alt="Video 142">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 142</h3>
+          <p>Mô tả ngắn cho Video 142</p>
+        </div>
+      </div>
+
+      <!-- Video 143 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-143" target="_blank">
+            <img src="images/video143.jpg" alt="Video 143">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 143</h3>
+          <p>Mô tả ngắn cho Video 143</p>
+        </div>
+      </div>
+
+      <!-- Video 144 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-144" target="_blank">
+            <img src="images/video144.jpg" alt="Video 144">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 144</h3>
+          <p>Mô tả ngắn cho Video 144</p>
+        </div>
+      </div>
+
+      <!-- Video 145 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-145" target="_blank">
+            <img src="images/video145.jpg" alt="Video 145">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 145</h3>
+          <p>Mô tả ngắn cho Video 145</p>
+        </div>
+      </div>
+
+      <!-- Video 146 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-146" target="_blank">
+            <img src="images/video146.jpg" alt="Video 146">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 146</h3>
+          <p>Mô tả ngắn cho Video 146</p>
+        </div>
+      </div>
+
+      <!-- Video 147 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-147" target="_blank">
+            <img src="images/video147.jpg" alt="Video 147">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 147</h3>
+          <p>Mô tả ngắn cho Video 147</p>
+        </div>
+      </div>
+
+      <!-- Video 148 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-148" target="_blank">
+            <img src="images/video148.jpg" alt="Video 148">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 148</h3>
+          <p>Mô tả ngắn cho Video 148</p>
+        </div>
+      </div>
+
+      <!-- Video 149 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-149" target="_blank">
+            <img src="images/video149.jpg" alt="Video 149">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 149</h3>
+          <p>Mô tả ngắn cho Video 149</p>
+        </div>
+      </div>
+
+      <!-- Video 150 -->
+      <div class="video-card">
+        <div class="video-wrapper">
+          <a href="https://example.com/link-video-150" target="_blank">
+            <img src="images/video150.jpg" alt="Video 150">
+          </a>
+        </div>
+        <div class="video-info">
+          <h3>Tiêu đề Video 150</h3>
+          <p>Mô tả ngắn cho Video 150</p>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      Local only
+    </footer>
+  </div>
+
+<!-- Pop-up Đăng Nhập -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('loginModal')">&times;</span>
+      <h2>Đăng Nhập</h2>
+      <form onsubmit="handleAuth(event, 'Đăng nhập')">
+        <div class="form-group">
+          <label>Tên đăng nhập / Email</label>
+          <input type="text" required>
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input type="password" required>
+        </div>
+        <button type="submit" class="btn-submit">Đăng nhập</button>
+      </form>
+      <div class="modal-footer">
+        Chưa có tài khoản? <a href="#" onclick="switchModal('loginModal', 'registerModal')">Đăng ký ngay</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pop-up Đăng Ký -->
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('registerModal')">&times;</span>
+      <h2>Đăng Ký Tài Khoản</h2>
+      <form onsubmit="handleAuth(event, 'Đăng ký')">
+        <div class="form-group">
+          <label>Tên tài khoản</label>
+          <input type="text" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" required>
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input type="password" required>
+        </div>
+        <button type="submit" class="btn-submit">Tạo tài khoản</button>
+      </form>
+      <div class="modal-footer">
+        Đã có tài khoản? <a href="#" onclick="switchModal('registerModal', 'loginModal')">Đăng nhập</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Lọc Video Tự Động -->
+  <script>
+    function filterVideos() {
+      const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
+      const videoCards = document.querySelectorAll('.video-card');
+
+      videoCards.forEach(card => {
+        const titleText = card.querySelector('.video-info h3').textContent.toLowerCase();
+        if (titleText.includes(searchValue)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
