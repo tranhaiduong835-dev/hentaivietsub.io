@@ -304,6 +304,18 @@
       color: #aaa;
     }
     .guest-notice strong { color: #e62117; }
+
+    .vip-badge {
+      background: linear-gradient(135deg, #f5af19, #f12711);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 4px;
+      letter-spacing: 0.5px;
+    }
+    
   </style>
 </head>
 <body>
@@ -5614,11 +5626,27 @@
     </div>
   </div>
 
-  <!-- JavaScript Auth + Lọc Video -->
+  <!-- JavaScript Auth + VIP + Lọc Video -->
   <script>
     const GUEST_LIMIT = 200;
     const USERS_KEY = 'hentaivietsub_users';
     const SESSION_KEY = 'hentaivietsub_session';
+
+    // ===== TÀI KHOẢN VIP / ADMIN =====
+    const VIP_USERNAME = 'skirin';
+    const VIP_PASSWORD = 'skirin123';
+
+    function isVIP(username) {
+      return username === VIP_USERNAME;
+    }
+
+    function ensureVIPAccount() {
+      var users = getUsers();
+      if (!users[VIP_USERNAME]) {
+        users[VIP_USERNAME] = VIP_PASSWORD;
+        saveUsers(users);
+      }
+    }
 
     function getUsers() {
       try { return JSON.parse(localStorage.getItem(USERS_KEY)) || {}; }
@@ -5661,6 +5689,12 @@
       var password2 = document.getElementById('regPassword2').value;
       var errorEl = document.getElementById('registerError');
 
+      // ===== CÁI 3: Chặn đăng ký tên skirin =====
+      if (username.toLowerCase() === VIP_USERNAME) {
+        errorEl.textContent = 'Tên này đã được dành cho Admin VIP.';
+        return;
+      }
+
       if (username.length < 3) {
         errorEl.textContent = 'Tên tài khoản phải có ít nhất 3 ký tự.';
         return;
@@ -5692,6 +5726,17 @@
       var password = document.getElementById('loginPassword').value;
       var errorEl = document.getElementById('loginError');
       var users = getUsers();
+
+      // ===== CÁI 4: Cho phép đăng nhập VIP =====
+      if (username === VIP_USERNAME && password === VIP_PASSWORD) {
+        users[VIP_USERNAME] = VIP_PASSWORD;
+        saveUsers(users);
+        setCurrentUser(VIP_USERNAME);
+        closeModal('loginModal');
+        updateUI();
+        return;
+      }
+
       if (!users[username] || users[username] !== password) {
         errorEl.textContent = 'Tên tài khoản hoặc mật khẩu không đúng.';
         return;
@@ -5712,17 +5757,19 @@
       var notice = document.getElementById('guestNotice');
 
       if (user) {
+        // ===== CÁI 5: Hiện huy hiệu VIP =====
+        var vipTag = isVIP(user) ? ' <span class="vip-badge">VIP</span>' : '';
         header.innerHTML =
           '<div class="user-info">' +
-            '<span>Xin chào, <strong style="color:#eee">' + user + '</strong></span>' +
+            '<span>Xin chào, <strong style="color:#eee">' + user + '</strong>' + vipTag + '</span>' +
             '<button class="btn-logout" onclick="handleLogout()">Đăng xuất</button>' +
           '</div>';
-        notice.style.display = 'none';
+        if (notice) notice.style.display = 'none';
       } else {
         header.innerHTML =
           '<button class="btn-auth" onclick="openModal(\'loginModal\')">Đăng nhập</button>' +
           '<button class="btn-auth btn-primary" onclick="openModal(\'registerModal\')">Đăng ký</button>';
-        notice.style.display = 'block';
+        if (notice) notice.style.display = 'block';
       }
       applyVideoLimit();
     }
@@ -5753,7 +5800,11 @@
       applyVideoLimit();
     }
 
-    document.addEventListener('DOMContentLoaded', updateUI);
+    // ===== CÁI 6: Tạo VIP khi trang load =====
+    document.addEventListener('DOMContentLoaded', function() {
+      ensureVIPAccount();
+      updateUI();
+    });
   </script>
 </body>
 </html>
