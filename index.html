@@ -74,12 +74,6 @@
     header {
       text-align: center;
       margin-bottom: 25px;
-      padding: 10px 0;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 25px;
       padding: 30px 0 10px;
     }
 
@@ -181,11 +175,140 @@
       color: #444;
       font-size: 0.85rem;
     }
+
+    /* ===== Modal & Auth styles ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-content {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 32px 28px;
+      width: 90%;
+      max-width: 380px;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .modal-content h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    .close-btn {
+      position: absolute;
+      top: 14px; right: 18px;
+      font-size: 1.6rem;
+      color: #888;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .close-btn:hover { color: #e62117; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 11px 14px;
+      background: #0f0f0f;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #eee;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: #e62117; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: #e62117;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover { background: #cc1e15; }
+
+    .modal-footer {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 0.85rem;
+      color: #777;
+    }
+    .modal-footer a { color: #e62117; text-decoration: none; }
+    .modal-footer a:hover { text-decoration: underline; }
+
+    .auth-error {
+      color: #e62117;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-bottom: 12px;
+      min-height: 1.2em;
+    }
+
+    .user-info {
+      color: #eee;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-info span { color: #aaa; }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid #555;
+      color: #ccc;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover {
+      border-color: #e62117;
+      color: #e62117;
+    }
+
+    .guest-notice {
+      text-align: center;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 12px 20px;
+      margin-bottom: 25px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    .guest-notice strong { color: #e62117; }
   </style>
 </head>
 <body>
 <!-- Nút góc trên cùng bên phải -->
-  <div class="top-header">
+  <div class="top-header" id="topHeader">
     <button class="btn-auth" onclick="openModal('loginModal')">Đăng nhập</button>
     <button class="btn-auth btn-primary" onclick="openModal('registerModal')">Đăng ký</button>
   </div>
@@ -201,8 +324,13 @@
       <input type="text" id="searchInput" onkeyup="filterVideos()" placeholder="Nhập tên tiêu đề phim để tìm...">
     </div>
 
-    <div class="video-grid" id="videoGrid">
+    <div class="guest-notice" id="guestNotice" style="display:none;">
+      Bạn đang xem với tư cách <strong>khách</strong>. Chỉ xem được tối đa <strong>200</strong> video.
+      <a href="#" onclick="openModal('registerModal')" style="color:#e62117; margin-left:8px;">Đăng ký</a> để xem toàn bộ.
+    </div>
 
+    <div class="video-grid" id="videoGrid">
+      
 <!-- Video 1 -->
       <div class="video-card">
         <div class="video-wrapper">
@@ -5436,21 +5564,196 @@
     </footer>
   </div>
 
-  <!-- JavaScript Lọc Video Tự Động -->
-  <script>
-    function filterVideos() {
-      const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
-      const videoCards = document.querySelectorAll('.video-card');
+  <!-- Pop-up Đăng Nhập -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('loginModal')">&times;</span>
+      <h2>Đăng Nhập</h2>
+      <div class="auth-error" id="loginError"></div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Tên tài khoản</label>
+          <input type="text" id="loginUsername" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input type="password" id="loginPassword" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-submit">Đăng nhập</button>
+      </form>
+      <div class="modal-footer">
+        Chưa có tài khoản? <a href="#" onclick="switchModal('loginModal', 'registerModal')">Đăng ký ngay</a>
+      </div>
+    </div>
+  </div>
 
-      videoCards.forEach(card => {
-        const titleText = card.querySelector('.video-info h3').textContent.toLowerCase();
-        if (titleText.includes(searchValue)) {
-          card.style.display = 'block';
-        } else {
+  <!-- Pop-up Đăng Ký -->
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('registerModal')">&times;</span>
+      <h2>Đăng Ký Tài Khoản</h2>
+      <div class="auth-error" id="registerError"></div>
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label>Tên tài khoản</label>
+          <input type="text" id="regUsername" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input type="password" id="regPassword" required autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label>Nhập lại mật khẩu</label>
+          <input type="password" id="regPassword2" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn-submit">Tạo tài khoản</button>
+      </form>
+      <div class="modal-footer">
+        Đã có tài khoản? <a href="#" onclick="switchModal('registerModal', 'loginModal')">Đăng nhập</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Auth + Lọc Video -->
+  <script>
+    const GUEST_LIMIT = 200;
+    const USERS_KEY = 'hentaivietsub_users';
+    const SESSION_KEY = 'hentaivietsub_session';
+
+    function getUsers() {
+      try { return JSON.parse(localStorage.getItem(USERS_KEY)) || {}; }
+      catch(e) { return {}; }
+    }
+    function saveUsers(users) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+    function getCurrentUser() {
+      return localStorage.getItem(SESSION_KEY) || null;
+    }
+    function setCurrentUser(username) {
+      if (username) localStorage.setItem(SESSION_KEY, username);
+      else localStorage.removeItem(SESSION_KEY);
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+      var err = document.getElementById(id === 'loginModal' ? 'loginError' : 'registerError');
+      if (err) err.textContent = '';
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+    function switchModal(fromId, toId) {
+      closeModal(fromId);
+      openModal(toId);
+    }
+
+    document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === this) closeModal(this.id);
+      });
+    });
+
+    function handleRegister(e) {
+      e.preventDefault();
+      var username = document.getElementById('regUsername').value.trim();
+      var password = document.getElementById('regPassword').value;
+      var password2 = document.getElementById('regPassword2').value;
+      var errorEl = document.getElementById('registerError');
+
+      if (username.length < 3) {
+        errorEl.textContent = 'Tên tài khoản phải có ít nhất 3 ký tự.';
+        return;
+      }
+      if (password.length < 4) {
+        errorEl.textContent = 'Mật khẩu phải có ít nhất 4 ký tự.';
+        return;
+      }
+      if (password !== password2) {
+        errorEl.textContent = 'Mật khẩu nhập lại không khớp.';
+        return;
+      }
+      var users = getUsers();
+      if (users[username]) {
+        errorEl.textContent = 'Tên tài khoản đã tồn tại.';
+        return;
+      }
+      users[username] = password;
+      saveUsers(users);
+      setCurrentUser(username);
+      closeModal('registerModal');
+      updateUI();
+      alert('Đăng ký thành công! Bạn có thể xem toàn bộ video.');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      var username = document.getElementById('loginUsername').value.trim();
+      var password = document.getElementById('loginPassword').value;
+      var errorEl = document.getElementById('loginError');
+      var users = getUsers();
+      if (!users[username] || users[username] !== password) {
+        errorEl.textContent = 'Tên tài khoản hoặc mật khẩu không đúng.';
+        return;
+      }
+      setCurrentUser(username);
+      closeModal('loginModal');
+      updateUI();
+    }
+
+    function handleLogout() {
+      setCurrentUser(null);
+      updateUI();
+    }
+
+    function updateUI() {
+      var user = getCurrentUser();
+      var header = document.getElementById('topHeader');
+      var notice = document.getElementById('guestNotice');
+
+      if (user) {
+        header.innerHTML =
+          '<div class="user-info">' +
+            '<span>Xin chào, <strong style="color:#eee">' + user + '</strong></span>' +
+            '<button class="btn-logout" onclick="handleLogout()">Đăng xuất</button>' +
+          '</div>';
+        notice.style.display = 'none';
+      } else {
+        header.innerHTML =
+          '<button class="btn-auth" onclick="openModal(\'loginModal\')">Đăng nhập</button>' +
+          '<button class="btn-auth btn-primary" onclick="openModal(\'registerModal\')">Đăng ký</button>';
+        notice.style.display = 'block';
+      }
+      applyVideoLimit();
+    }
+
+    function applyVideoLimit() {
+      var user = getCurrentUser();
+      var cards = document.querySelectorAll('.video-card');
+      var searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      cards.forEach(function(card, index) {
+        var h3 = card.querySelector('.video-info h3');
+        var titleText = h3 ? h3.textContent : '';
+        var matchSearch = !searchValue || titleText.toLowerCase().includes(searchValue);
+
+        if (!matchSearch) {
           card.style.display = 'none';
+          return;
+        }
+        if (!user && index >= GUEST_LIMIT) {
+          card.style.display = 'none';
+        } else {
+          card.style.display = 'block';
         }
       });
     }
+
+    function filterVideos() {
+      applyVideoLimit();
+    }
+
+    document.addEventListener('DOMContentLoaded', updateUI);
   </script>
 </body>
 </html>
