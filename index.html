@@ -20,6 +20,7 @@
       color: #eee;
       line-height: 1.5;
       padding: 20px;
+      padding-top: 80px;   /* đã thêm */
     }
 
     .container {
@@ -27,7 +28,7 @@
       margin: 0 auto;
     }
 
-/* Thanh Navigation Cố Định Ở Góc Trên Cùng Phải */
+    /* ===== THANH NAVIGATION + HAMBURGER ===== */
     .top-header {
       position: fixed;
       top: 0;
@@ -37,14 +38,117 @@
       background: rgba(10, 10, 10, 0.95);
       border-bottom: 1px solid #222;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
       padding: 0 25px;
-      gap: 12px;
       z-index: 100;
       backdrop-filter: blur(5px);
     }
 
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Nút ba gạch ngang */
+    .hamburger {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: #eee;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger:hover span {
+      background: #e62117;
+    }
+
+    /* Side Menu Overlay */
+    .side-menu-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 150;
+      backdrop-filter: blur(2px);
+    }
+
+    .side-menu-overlay.active {
+      display: block;
+    }
+
+    /* Side Menu */
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background: #141414;
+      border-right: 1px solid #222;
+      z-index: 200;
+      transition: left 0.3s ease;
+      padding-top: 70px;
+      overflow-y: auto;
+    }
+
+    .side-menu.active {
+      left: 0;
+    }
+
+    .side-menu nav {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 0;
+    }
+
+    .side-menu a {
+      color: #eee;
+      text-decoration: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .side-menu a:hover {
+      background: #1f1f1f;
+      color: #e62117;
+      border-left-color: #e62117;
+    }
+
+    .side-menu .menu-title {
+      padding: 8px 28px 16px;
+      font-size: 0.75rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== CÁC STYLE CŨ GIỮ NGUYÊN ===== */
     .btn-auth {
       background: transparent;
       border: 1px solid #333;
@@ -89,7 +193,6 @@
       margin-top: 6px;
     }
 
-    /* CSS Thanh Tìm Kiếm */
     .search-box {
       margin-bottom: 35px;
       text-align: center;
@@ -315,15 +418,38 @@
       margin-left: 4px;
       letter-spacing: 0.5px;
     }
-    
   </style>
 </head>
 <body>
-<!-- Nút góc trên cùng bên phải -->
-  <div class="top-header" id="topHeader">
+
+<!-- ===== TOP HEADER + HAMBURGER ===== -->
+<div class="top-header" id="topHeader">
+  <div class="header-left">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSideMenu()" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <div class="header-right" id="headerRight">
     <button class="btn-auth" onclick="openModal('loginModal')">Đăng nhập</button>
     <button class="btn-auth btn-primary" onclick="openModal('registerModal')">Đăng ký</button>
   </div>
+</div>
+
+<!-- Side Menu Overlay -->
+<div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
+
+<!-- Side Menu -->
+<div class="side-menu" id="sideMenu">
+  <div class="menu-title">Navigation</div>
+  <nav>
+    <a href="#" onclick="closeSideMenu(); window.scrollTo({top:0, behavior:'smooth'}); return false;">Home</a>
+    <a href="#" onclick="closeSideMenu(); sortByViews(); return false;">Most Viewed</a>
+    <a href="#" onclick="closeSideMenu(); return false;">Explore</a>
+    <a href="#" onclick="closeSideMenu(); return false;">Hentai Vietsub</a>
+  </nav>
+</div>
 
   <div class="container">
     <header>
@@ -5626,7 +5752,7 @@
     </div>
   </div>
 
-  <!-- JavaScript Auth + VIP + Lọc Video -->
+ <!-- JavaScript Auth + VIP + Lọc Video + Side Menu -->
   <script>
     const GUEST_LIMIT = 200;
     const USERS_KEY = 'hentaivietsub_users';
@@ -5652,12 +5778,15 @@
       try { return JSON.parse(localStorage.getItem(USERS_KEY)) || {}; }
       catch(e) { return {}; }
     }
+
     function saveUsers(users) {
       localStorage.setItem(USERS_KEY, JSON.stringify(users));
     }
+
     function getCurrentUser() {
       return localStorage.getItem(SESSION_KEY) || null;
     }
+
     function setCurrentUser(username) {
       if (username) localStorage.setItem(SESSION_KEY, username);
       else localStorage.removeItem(SESSION_KEY);
@@ -5668,9 +5797,11 @@
       var err = document.getElementById(id === 'loginModal' ? 'loginError' : 'registerError');
       if (err) err.textContent = '';
     }
+
     function closeModal(id) {
       document.getElementById(id).classList.remove('active');
     }
+
     function switchModal(fromId, toId) {
       closeModal(fromId);
       openModal(toId);
@@ -5751,22 +5882,23 @@
       updateUI();
     }
 
+    // ===== ĐÃ SỬA: dùng headerRight thay vì topHeader =====
     function updateUI() {
       var user = getCurrentUser();
-      var header = document.getElementById('topHeader');
+      var headerRight = document.getElementById('headerRight');
       var notice = document.getElementById('guestNotice');
 
       if (user) {
         // ===== CÁI 5: Hiện huy hiệu VIP =====
         var vipTag = isVIP(user) ? ' <span class="vip-badge">VIP</span>' : '';
-        header.innerHTML =
+        headerRight.innerHTML =
           '<div class="user-info">' +
             '<span>Xin chào, <strong style="color:#eee">' + user + '</strong>' + vipTag + '</span>' +
             '<button class="btn-logout" onclick="handleLogout()">Đăng xuất</button>' +
           '</div>';
         if (notice) notice.style.display = 'none';
       } else {
-        header.innerHTML =
+        headerRight.innerHTML =
           '<button class="btn-auth" onclick="openModal(\'loginModal\')">Đăng nhập</button>' +
           '<button class="btn-auth btn-primary" onclick="openModal(\'registerModal\')">Đăng ký</button>';
         if (notice) notice.style.display = 'block';
@@ -5798,6 +5930,42 @@
 
     function filterVideos() {
       applyVideoLimit();
+    }
+
+    // ===== SIDE MENU (mới thêm) =====
+    function toggleSideMenu() {
+      var menu = document.getElementById('sideMenu');
+      var overlay = document.getElementById('sideMenuOverlay');
+      menu.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+
+    function closeSideMenu() {
+      var menu = document.getElementById('sideMenu');
+      var overlay = document.getElementById('sideMenuOverlay');
+      menu.classList.remove('active');
+      overlay.classList.remove('active');
+    }
+
+    // Sắp xếp theo lượt xem cao nhất
+    function sortByViews() {
+      var grid = document.getElementById('videoGrid');
+      var cards = Array.from(grid.querySelectorAll('.video-card'));
+
+      cards.sort(function(a, b) {
+        var viewsA = a.querySelector('.views');
+        var viewsB = b.querySelector('.views');
+        var numA = viewsA ? parseInt(viewsA.textContent.replace(/,/g, '')) || 0 : 0;
+        var numB = viewsB ? parseInt(viewsB.textContent.replace(/,/g, '')) || 0 : 0;
+        return numB - numA;
+      });
+
+      cards.forEach(function(card) {
+        grid.appendChild(card);
+      });
+
+      applyVideoLimit();
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     // ===== CÁI 6: Tạo VIP khi trang load =====
